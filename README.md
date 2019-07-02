@@ -1,1 +1,1 @@
-# ProofTag---Challenge
+# ProofTag-Challenge
