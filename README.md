@@ -156,10 +156,10 @@ If GET_PRODUCT was req. then web service will return info in <tag>. If no GET_BU
     - target_country |          | ISO code of the target country of the cert. The target country is returned if defined when cert. was activated
 
 If GET_CONTAINER param. was req. the web service will return info in <container>, given that cert is a container and/or the cert. is in a container
-- Tag   | Description
-- is_container | Cert. is a container if value returned is 1. GetContainerInfo method provides container specific info.
-- parent_container_ref | Parent container cert. ref.
-- parent_container_id  | Parent container cert. id
+    - Tag   | Description
+    - is_container | Cert. is a container if value returned is 1. GetContainerInfo method provides container specific info.
+    - parent_container_ref | Parent container cert. ref.
+    - parent_container_id  | Parent container cert. id
 
 If GET_PRODUCT param. was req. and a product has been associated with cert., the WS will return info in <product>
     - Tag   | Desc.
@@ -170,3 +170,135 @@ If GET_PRODUCT param. was req. and a product has been associated with cert., the
     - extern_id      | Ext. product identifier in the system. Tag is present only if ext. identifier is defined
     - CODE GTIN
 
+If web service requires additional info., XMlOut file will contain <dataRequestDetail> containing details of required info. Type of info is defined by <dataType>, TAG_NUMBER, SESSION_ID, COTROL_KEY, or CONTROL_BUBBLE
+    - TAG   | Desc.
+    - dataType | Type of missing data to provide in req.
+    - dataName | Name of data(used for TAG_NUMBER or CONTROL_KEY)
+    - dataValue | Value data(used for SESSION_ID or CONTROL_BUBBLE)
+    - dataContent | Image(base64 code) of visual control element(used for CONTROL_BUBBLE)
+    - dataLabel | Label for disp. data
+    - dataComment | Explanatory comment
+
+Examples of Web service returns:
+    - success: 
+        ```
+            <?xml version="1.0" encoding="UTF-8"?>
+                <response>
+                    <status>END</status>
+                    <message>OK</message>
+                    <tag>
+                        <tag_number>P00A00B000001</tag_number>
+                        <tag_status>active</tag_status>
+                        <tag_date_activation>2006-10-05</tag_date_activation>
+                        <tag_date_validity></tag_date_validity>
+                        <tag_image_64>/9j/…..==</tag_image_64>
+                        <target_country>DE</target_country>
+                    </tag>
+                </response>
+        ```
+    - failure:
+        ```
+        <?xml version="1.0" encoding="UTF-8"?>
+            <response>
+                <status>ERROR</status>
+                <msg_id>100</msg_id>
+            </response>
+        ```
+    - error:
+        ```
+        <?xml version="1.0" encoding="UTF-8"?>
+            <response>
+                <status>ERROR</status>
+                    <message>Une erreur est survenue.</message>
+                    <msg_id>10</msg_id>
+                    <error>Le paramètre XmlIn n'est pas du XML valide.</error>
+            </response>
+        ```
+
+### Control Data Request
+
+If access to cert. is protected by one or more control values, the WS will wait 20 minutes for a second call containing requested values and a session code. If wrong control values were provided and/or number of attempts exceeded(assuming time alloted has past) then cert. is blocked for a period of time(default 24 hours)
+
+When requesting additional control data the WS returns LOOP status and describes values needed in <dataRequestDetail> which contains <dataType> of CONTROL_BUBBLE or CONTROL_KEY
+
+Control key: (control by text value)
+    - maybe CCP code on seal or any other textual data to authenticate product.(Only one attempt)
+    - XMlOut file example:
+        ```
+        <?xml version="1.0" encoding="UTF-8"?>
+            <response>
+                <status>LOOP</status>
+                <message>Veuillez saisir les données de contrôle pour visualiser le certificat.</message>
+                <msg_id>106</msg_id>
+                <dataRequest>
+                    <dataRequestDetail>
+                        <dataType>CONTROL_KEY</dataType>
+                        <dataId>123</dataId>
+                        <dataLabel><![CDATA[Numéro de référence]]></dataLabel>
+                    </dataRequestDetail>
+                </dataRequest>
+                <dataRequest>
+                    <dataRequestDetail>
+                        <dataType>SESSION_ID</dataType>
+                        <dataId>xxxx1xxxxz1o0f45xpteia55</dataId>
+                    </dataRequestDetail>
+                </dataRequest>
+            </response>
+        ```
+        - Second call must then include <dataType>CONTROL_KEY</dataType>, <dataId>123</dataId>, and <dataValue>(Whatever is required)</dataValue> 
+        ```
+        <requestedDataDetail>
+            <dataType>CONTROL_KEY</dataType>
+            <dataId>123</dataId>
+            <dataValue><![CDATA[user input]]></dataValue>
+        </requestedDataDetail>
+        ```
+
+Control Bubble: (Image Captcha Bubble Control)
+    - The WS will return a series of images, one of which corresponds to the bubble code on the seal.
+    - Number of captcha bubbles sent depends on customer's configs. Determines # of attemps
+        - Bubble Captcha #  | Authorized attemps #
+        - 3                 | 1
+        - 6                 | 2
+        - 9                 | 3
+    - Example of XMlOut file:
+        ```
+        <?xml version="1.0" encoding="UTF-8"?>
+            <response>
+                <status>LOOP</status>
+                <message> Please enter the control data to see the certificate. </message>
+                <msg_id>106</msg_id>
+                <dataRequest>
+                    <dataRequestDetail>
+                        <dataType>CONTROL_ BUBBLE </dataType>
+                        <dataValue>1</dataValue >
+                        <dataContent>base64 image 1….. </dataContent >
+                    </dataRequestDetail>
+                    <dataRequestDetail>
+                        <dataType>CONTROL_ BUBBLE </dataType>
+                        <dataValue>2</dataValue >
+                        <dataContent> base64 image 2….. </dataContent >
+                    </dataRequestDetail>
+                    <dataRequestDetail>
+                        <dataType>CONTROL_ BUBBLE </dataType>
+                        <dataValue>3</dataValue >
+                        <dataContent> base64 image 3….. </dataContent >
+                    </dataRequestDetail>
+                </dataRequest>
+                <dataRequest>
+                    <dataRequestDetail>
+                        <dataType>SESSION_ID</dataType>
+                        <dataId>xxxx1xxxxz1o0f45xpteia55</dataId>
+                    </dataRequestDetail>
+                </dataRequest>
+            </response>
+        ```
+        - For the second call to return user's selected image refer to image's <dataValue>
+            ```
+            <requestedDataDetail>
+                <dataType>CONTROL_BUBBLE</dataType>
+                <dataValue> Index of the image selected by the user </dataValue>
+            </requestedDataDetail>
+            ```
+    
+For both control methods it's required to return SESSION_ID provided by the web service
