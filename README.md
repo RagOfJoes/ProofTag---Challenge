@@ -180,7 +180,7 @@ If web service requires additional info., XMlOut file will contain `<dataRequest
 - dataComment | Explanatory comment
 
 Examples of Web service returns:
-    - success: 
+- success: 
 ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
@@ -196,7 +196,7 @@ Examples of Web service returns:
                 </tag>
             </response>
 ```
-    - failure:
+- failure:
 ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
@@ -204,7 +204,7 @@ Examples of Web service returns:
                 <msg_id>100</msg_id>
             </response>
 ```
-    - error:
+- error:
 ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
