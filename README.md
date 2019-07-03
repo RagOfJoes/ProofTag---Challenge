@@ -46,7 +46,7 @@ Requirements:
     - optional tags define what data is required and what will be returned by WebService
     - must be encapsulated in <request> and <requestData> tags
     - example:
-    ```
+    ```xml
     <?xml version="1.0" encoding="UTF-8"?>
         <request>
             <requestedData>
@@ -91,7 +91,7 @@ Requirements:
         <dataValue> : tag with the value of the control data to be provided to the web service in return. <dataLabel> : label of the control data for displaying a form.
         - CONTROL_BUBBLE | All the CONTROL_BUBBLE tags define a list of of Bubble Tag images which the user must select the ref. img. in the process | <dataValue> : The        picture’s index of the Bubble Tag ™ in the checklist. <dataContent> : base code 64 of the Bubble Tag ™ image
     - Example of XMlIn file(requires three param. TAG_NUMBER, APP_ID, CLIENT_IP w/ optional GET_BUBBLE):
-        ```
+        ```xml
         <?xml version="1.0" encoding="UTF-8"?>
         <request>
             <requestedData>
@@ -181,7 +181,7 @@ If web service requires additional info., XMlOut file will contain <dataRequestD
 
 Examples of Web service returns:
     - success: 
-        ```
+        ```xml
             <?xml version="1.0" encoding="UTF-8"?>
                 <response>
                     <status>END</status>
@@ -197,7 +197,7 @@ Examples of Web service returns:
                 </response>
         ```
     - failure:
-        ```
+        ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
                 <status>ERROR</status>
@@ -205,7 +205,7 @@ Examples of Web service returns:
             </response>
         ```
     - error:
-        ```
+        ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
                 <status>ERROR</status>
@@ -224,7 +224,7 @@ When requesting additional control data the WS returns LOOP status and describes
 Control key: (control by text value)
     - maybe CCP code on seal or any other textual data to authenticate product.(Only one attempt)
     - XMlOut file example:
-        ```
+        ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
                 <status>LOOP</status>
@@ -246,7 +246,7 @@ Control key: (control by text value)
             </response>
         ```
         - Second call must then include <dataType>CONTROL_KEY</dataType>, <dataId>123</dataId>, and <dataValue>(Whatever is required)</dataValue> 
-        ```
+        ```xml
         <requestedDataDetail>
             <dataType>CONTROL_KEY</dataType>
             <dataId>123</dataId>
@@ -262,7 +262,7 @@ Control Bubble: (Image Captcha Bubble Control)
         - 6                 | 2
         - 9                 | 3
     - Example of XMlOut file:
-        ```
+        ```xml
         <?xml version="1.0" encoding="UTF-8"?>
             <response>
                 <status>LOOP</status>
