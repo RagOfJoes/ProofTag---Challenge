@@ -14,3 +14,15 @@ function array_to_xml($data, $xml_data)
     }
     return $xml_data->asXML();
 }
+
+function xml_to_array($xml)
+{
+    // Convert XML to String
+    $string = simplexml_load_string($xml);
+
+    // Convert to JSON
+    $json = json_encode($string);
+
+    // Converts JSON to Associative Array
+    return json_decode($json);;
+}
