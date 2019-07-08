@@ -48,12 +48,15 @@ table {
 }
 
 /* End CSS Reset */
+body {
+    overflow: hidden;
+}
 
 .container { 
     display: flex;
     overflow: hidden;
     flex-direction: row;
-    background-color: #FCFCFC;
+    background-color: #EEEDE4;
 }
 
 /* Start Row One */
@@ -72,6 +75,7 @@ table {
     display: flex;
     height: 100vh;
     overflow: hidden;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -87,34 +91,53 @@ table {
 
 .rowTwo form .userInput {
     display: flex;
-    color: #3A4355;
-    text-align: center;
     font-size: 2.25vh;
+    text-align: center;
     align-items: center;
     flex-direction: column;
     justify-content: center;
 }
 
+.rowTwo form .userInput .tagNumberLabel {
+    width: 100%;
+    display: flex;
+    max-width: 235px;
+    color: #EEEDE4;
+    user-select: none;
+    padding: 5px 10px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #3A4355;
+    background-color: #3A4355;
+}
+
 .rowTwo form .userInput #tagNumberInput {
+    width: 100%;
     height: 3.25vh;
     color: #3A4355;
+    max-width: 235px;
     padding: 0px 10px;
     font-size: 1.75vh;
     border: 1px solid #3A4355;
+    background-color: transparent;
     font-family: 'DM Serif Text', serif;
 }
 
 .rowTwo form .userInput #tagNumberInput:focus {
-    font-size: 1.75vh;
     outline: transparent;
     font-family: 'DM Serif Text', serif;
 }
 
 .rowTwo form .userInput #tagNumberInput::placeholder {
-    flex: 1;
     color: #8C8C8E;
-    font-size: 1.75vh;
     font-family: 'DM Serif Text', serif;
+}
+
+.rowTwo form .userInput .tagNumberError {
+    color: #E13636;
+    font-size: 1.4vh;
+    user-select: none;
+    font-style: italic;
 }
 /* End Form */
 

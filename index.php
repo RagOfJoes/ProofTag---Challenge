@@ -12,21 +12,23 @@
 </head>
 
 <body>
+    <?php require_once("./prooftag/submit.php"); ?>
     <div class="container">
         <!-- BG -->
         <div class="rowOne"></div>
 
         <!-- Init. Form -->
         <div class="rowTwo">
-            <form method="post" action="./prooftag/submit.php">
+            <form method="post" action="<?php /* Sanitize Input */ echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>">
                 <div class="userInput">
-                    <label for="tagNumber">AUTHENTICATION</label>
-                    <input type="text" name="tagNumber" id="tagNumberInput" placeholder="Tag Number">
+                    <h1 class="tagNumberLabel">AUTHENTICATION</h1>
+                    <input type="text" name="tagNumber" id="tagNumberInput" placeholder="Tag Number" autofocus>
+                    <h1 class="tagNumberError"><?php echo $tagError ?></h1>
                 </div>
             </form>
         </div>
 
-        <!-- TODO: rowThree to output required info. or final output -->
+        <!-- TODO: Create Modal to display info -->
     </div>
 </body>
 
